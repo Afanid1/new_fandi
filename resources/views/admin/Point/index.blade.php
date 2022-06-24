@@ -35,7 +35,7 @@ Manage Point
     <div class="container">
         <table class="table centerW">
             <tr>
-                <th>id_transaksi</th>
+                <th>nama pelanggan</th>
                 <th>tanggal_poin</th>
                 <th>id_user</th>
                 <th>nominal</th>

@@ -35,7 +35,7 @@ class PointController extends Controller
 
         $response = curl_exec($curl);
         curl_close($curl);
-         $data = json_decode($response); 
+        $data = json_decode($response);
         // echo '<pre>';
         // print_r($data);  
         // echo '</pre>'; 
@@ -61,8 +61,7 @@ class PointController extends Controller
                 if ($nominal_awal > $nominal_min) {
                     $ttl_           = floor(($nom + $nominal_awal) / $nominal_min);
                     $db_get         = DB::table('tb_poin_fandi')->where('id_transaksi', @$key->{'TRANSACTION_ID'})->first();
-                    if (!$db_get) 
-                    {
+                    if (!$db_get) {
                         DB::table('tb_poin_fandi')->insert(
                             [
                                 'jumlah_poin'   => $ttl_,
@@ -73,24 +72,24 @@ class PointController extends Controller
                                 'status'        => 'aktif'
                             ]
                         );
-                        $detao_belanja=array();
-                        $io=0;
-                        foreach (@$key->{'detail'} as $key_1) 
-                        {
-                            $detao_belanja[$io]=array(
-                                'qty'=>@$key_1->{'DETAIL_TRANSACTION_QTY_PRODUCT'},
-                                'harga'=>@$key_1->{'DETAIL_TRANSACTION_PRICE_PRODUCT'},
-                                'sub_total'=>@$key_1->{'PRICE_AFTER_DISCOUNT'},
-                                'nm_barang'=>@$key_1->{'product'}->{'PRODUCT_NAME'});
-                           $io++; 
+                        $detao_belanja = array();
+                        $io = 0;
+                        foreach (@$key->{'detail'} as $key_1) {
+                            $detao_belanja[$io] = array(
+                                'qty' => @$key_1->{'DETAIL_TRANSACTION_QTY_PRODUCT'},
+                                'harga' => @$key_1->{'DETAIL_TRANSACTION_PRICE_PRODUCT'},
+                                'sub_total' => @$key_1->{'PRICE_AFTER_DISCOUNT'},
+                                'nm_barang' => @$key_1->{'product'}->{'PRODUCT_NAME'}
+                            );
+                            $io++;
                         }
-                        $daftarbelanja=serialize($detao_belanja);
-                            DB::table('tb_belanja')->insert(
-                                    [ 
-                                        'no_trax'  => @$key->{'TRANSACTION_ID'},
-                                        'atribut'  => $daftarbelanja
-                                    ]
-                                );
+                        $daftarbelanja = serialize($detao_belanja);
+                        DB::table('tb_belanja')->insert(
+                            [
+                                'no_trax'  => @$key->{'TRANSACTION_ID'},
+                                'atribut'  => $daftarbelanja
+                            ]
+                        );
 
                         $error = false;
                     }
