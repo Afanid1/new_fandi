@@ -114,13 +114,13 @@ Manage User
                                 </div>
                             </div>
                             {{-- <div class="form-group">--}}
-                            {{-- <label>Password</label>--}}
-                            {{-- <div class="input-group" id="show_hide_password">--}}
-                            {{-- <input class="form-control  form-control-border" type="password">--}}
-                            {{-- <div class="input-group-addon">--}}
-                            {{-- <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>--}}
-                            {{-- </div>--}}
-                            {{-- </div>--}}
+                                {{-- <label>Password</label>--}}
+                                {{-- <div class="input-group" id="show_hide_password">--}}
+                                    {{-- <input class="form-control  form-control-border" type="password">--}}
+                                    {{-- <div class="input-group-addon">--}}
+                                        {{-- <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>--}}
+                                    {{-- </div>--}}
+                                {{-- </div>--}}
                             {{-- </div>--}}
                             <div class="form-group">
                                 <label>Tanggal Registrasi <span class="text-danger">*</span> </label>
@@ -247,48 +247,51 @@ Manage User
                 }
             },
             columnDefs: [{
-                    targets: 0,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        $(td).text(row + 1)
-                    }
+                targets: 0,
+                createdCell: function(td, cellData, rowData, row, col) {
+                    $(td).text(row + 1)
+                }
+            },
+            {
+                targets: -1,
+                title: 'Aksi',
+                orderable: false,
+                createdCell: function(td, cellData, rowData, row, col) {
+                    $(td).addClass('text-center');
                 },
-                {
-                    targets: -1,
-                    title: 'Aksi',
-                    orderable: false,
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        $(td).addClass('text-center');
-                    },
-                    render: function(data, type, full, meta) {
-                        return '\
-                                    <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-edit btn btn-sm btn-outline-primary btn-icon" title="Edit details">\
-                                        <i class="fa fa-edit"></i>\
-                                    </a>\
-                                    <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-delete btn btn-sm btn-outline-danger btn-icon" title="Delete">\
-                                        <i class="fa fa-trash"></i>\
-                                    </a>\
-                                ';
-                    },
+                render: function(data, type, full, meta) {
+                    return '\
+                    <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-edit btn btn-sm btn-outline-primary btn-icon" title="Edit details">\
+                    <i class="fa fa-edit"></i>\
+                    </a>\
+                    <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-delete btn btn-sm btn-outline-danger btn-icon" title="Delete">\
+                    <i class="fa fa-trash"></i>\
+                    </a>\
+                    <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-login btn btn-sm btn-outline-danger btn-icon" title="Delete">\
+                    login\
+                    </a>\
+                    ';
                 },
+            },
             ],
             columns: [{
-                    data: 'username'
-                },
-                {
-                    data: 'name'
-                },
-                {
-                    data: 'member_id'
-                },
-                {
-                    data: 'phone_number'
-                },
-                {
-                    data: 'address'
-                },
-                {
-                    data: 'id'
-                },
+                data: 'username'
+            },
+            {
+                data: 'name'
+            },
+            {
+                data: 'member_id'
+            },
+            {
+                data: 'phone_number'
+            },
+            {
+                data: 'address'
+            },
+            {
+                data: 'id'
+            },
             ]
         });
 
@@ -337,50 +340,50 @@ Manage User
         $('#user-table').on('click', '.btn-delete', function() {
             var id = $(this).data('id');
             Swal.fire({
-                    title: "Delete Entry Guide",
-                    text: "Are you sure to delete this data?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes'
-                })
-                .then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            type: "POST",
-                            url: "{{url('/user/destroy')}}/" + id,
-                            contentType: false,
-                            processData: false,
-                            beforeSend: function() {
-                                swal.fire({
-                                    text: "Please Wait...",
-                                    allowOutsideClick: false,
-                                    allowEscapeKey: false,
-                                    allowEnterKey: false,
-                                    onOpen: function() {
-                                        Swal.showLoading()
-                                    }
-                                });
-                            },
-                            success: function(data) {
-                                table.ajax.reload();
-                                swal.close()
-                                swal.fire({
-                                    text: data.message,
-                                    icon: data.code == 600 ? "warning" : "success"
-                                });
-                            },
-                            error: function(res, exception) {
-                                swal.close()
-                                swal.fire({
-                                    text: "Something Wrong, Please check your connection and try again!",
-                                    icon: "error"
-                                });
-                            }
-                        });
-                    }
-                });
+                title: "Delete Entry Guide",
+                text: "Are you sure to delete this data?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            })
+            .then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{url('/user/destroy')}}/" + id,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function() {
+                            swal.fire({
+                                text: "Please Wait...",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                onOpen: function() {
+                                    Swal.showLoading()
+                                }
+                            });
+                        },
+                        success: function(data) {
+                            table.ajax.reload();
+                            swal.close()
+                            swal.fire({
+                                text: data.message,
+                                icon: data.code == 600 ? "warning" : "success"
+                            });
+                        },
+                        error: function(res, exception) {
+                            swal.close()
+                            swal.fire({
+                                text: "Something Wrong, Please check your connection and try again!",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
         });
 
         $('#user-modal').on('click', '#btn_form', function() {
@@ -429,6 +432,23 @@ Manage User
                 }
             });
         });
+        $('body').delegate('.btn-login', 'click', function(e) {
+            e.preventDefault();
+            var id_login = $(this).data('id');
+            const Form_item = new FormData();
+            Form_item.append('_token', '{{csrf_token()}}');
+            Form_item.append('id_login', id_login);
+
+            fetch("{{url('login-member')}}", {
+                method: 'POST',
+                body: Form_item
+            }).then(res => res.json()).then(data => {
+
+                window.location.href = '{{url('check')}}';
+            });
+        });
+
+
 
     });
 </script>

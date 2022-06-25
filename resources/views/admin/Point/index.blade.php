@@ -35,11 +35,11 @@ Manage Point
     <div class="container">
         <table class="table centerW">
             <tr>
-                <th>nama pelanggan</th>
-                <th>tanggal_poin</th>
-                <th>id_user</th>
-                <th>nominal</th>
-                <th>jumlah_poin</th>
+                <th>id_user</th> 
+                <th>custmer_partner_name</th> 
+                <th>Total Poin</th>
+                <th>Total Poin yg digunakan</th>
+
                 <th>Aksi</th>
             </tr>
             <tbody id="listPoin">
@@ -57,21 +57,10 @@ Manage Point
                 <div class="msg-Alert"></div>
                 <form id="simpaneditpoin" name="simpaneditpoin">
                     <div class="form-group">
-                        <input type="text" name="id_transaksi" class="form-control">
+                        <label>Gunakan Poin</label>
+                        <input type="text" name="penguranganpoin" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <input type="date" name="tanggal_poin" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="id_user" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="nominal" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="jumlah_poin" class="form-control">
-                    </div>
-                    <button class="btn btn-primary btn-sm" type="sumbit">simpan</button>
+                    <button class="btn btn-primary btn-sm" type="sumbit">Junakan</button>
                 </form>
             </div>
         </div>
@@ -108,7 +97,7 @@ Manage Point
                 }
                 setTimeout(function() {
                     insertPoinrealtime();
-                }, 2500);
+                }, 5500);
 
             });
         }
@@ -119,21 +108,18 @@ Manage Point
             }).then(res => res.json()).then(data => {
                 var let_ = '';
                 for (let key of data.db_get.data) {
+                    var cs=key.custmer_partner_name?key.custmer_partner_name:'-';
                     let_ += `<tr>
-							<th>` + key.id_transaksi + `</th>
-							<th>` + key.tanggal_poin + `</th>
-							<th>` + key.id_user + `</th>
-							<th>` + key.nominal + `</th>
-							<th>` + key.jumlah_poin + `</th>
-							<th
-							data-id_transaksi="` + key.id_transaksi + `"
-							data-tanggal_poin="` + key.tanggal_poin + `" 
-							data-id_user="` + key.id_user + `"
-							data-nominal="` + key.nominal + `"
-							data-jumlah_poin="` + key.jumlah_poin + `"
-							data-id_poin="` + key.id_poin + `" 
-							><a class="btn btn-warning Editini">Edit</a> <a data-id_poin="` + key.id_poin + `" class="btn btn-danger HapusIni">Hapus</a></th>  
-						</tr>`
+                    
+                    <th>` + cs + `</th>  
+                    <th>` + key.id_user + `</th> 
+                    <th>` + key.total + `</th>
+                    <th>` + key.yg_dihunakan + `</th>
+
+                    <th 
+                    data-id_poin="`+key.id_user+`"  data-total="`+key.total+`"
+                    ><a class="btn btn-warning Editini">gunakan poin</a></th>  
+                    </tr>`
                 }
                 $('#listPoin').html(let_);
             });
@@ -141,22 +127,27 @@ Manage Point
 
         $('body').delegate('.Editini', 'click', function(e) {
             e.preventDefault();
-            $('input[name="id_transaksi"]').val($(this).closest('th').data('id_transaksi'));
-            $('input[name="tanggal_poin"]').val($(this).closest('th').data('tanggal_poin'));
-            $('input[name="id_user"]').val($(this).closest('th').data('id_user'));
-            $('input[name="nominal"]').val($(this).closest('th').data('nominal'));
-            $('input[name="jumlah_poin"]').val($(this).closest('th').data('jumlah_poin'));
-            window.id_poin = $(this).closest('th').data('id_poin');
+            window.id_poin=$(this).closest('th').data('id_poin');
+            window.total_poin=$(this).closest('th').data('total');
+            $('input[name="penguranganpoin"]').val(window.total_poin)
+            $('.msg-Alert').html('Jumlah Poin :' +$(this).closest('th').data('total'))
             $('#statusModal').modal('show');
 
         });
         $('body').delegate('#simpaneditpoin', 'submit', function(e) {
             e.preventDefault();
+            var total_=parseInt(window.total_poin)-parseInt($('input[name="penguranganpoin"]').val());
+            
+            if(total_<1)
+            {
+                alert('poin tidak mencukupi');
+                return;
+            }
             const simpaneditpoin = document.forms.namedItem('simpaneditpoin');
             const Form_hps_item = new FormData(simpaneditpoin);
             Form_hps_item.append('_token', '{{csrf_token()}}');
             Form_hps_item.append('id_poin', window.id_poin);
-            fetch("{{url('point/edit-poin- transaksi')}}", {
+            fetch("{{url('point/edit-poin-transaksi')}}", {
                 method: 'POST',
                 body: Form_hps_item
             }).then(res => res.json()).then(data => {

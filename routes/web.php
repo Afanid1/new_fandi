@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\MainPaymentController;
 use App\Http\Controllers\Admin\MasterDataController;
 use App\Http\Controllers\Admin\MonthlyPaymentController;
@@ -22,7 +23,7 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'login'])->name('login.index');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
+Route::post('/login-member', [DashboardController::class, 'loginmember']);
 
 Route::get('/check', function () {
     if (Auth::user()->roles->name == 'user') {
@@ -112,7 +113,7 @@ Route::group(['as' => 'admin.', 'middleware' => 'role:admin'], function () {
     });
 });
 Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => 'role:user'], function () {
-	Route::get('/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
     Route::get('/poin-user', [AnggotaController::class, 'poinuser'])->name('poinuser');
     Route::get('/get-table-poin', [AnggotaController::class, 'gettablepoin']);
     Route::get('/get-table-poin/{id_poin}', [AnggotaController::class, 'gettablepoindetail']);
@@ -125,12 +126,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => 'role:user'],
     Route::get('/payment/other/list', [AnggotaController::class, 'paymentother'])->name('payment.other.index');
 
 
-    
-
-    Route::get('/keuangan-user', [AnggotaController::class, 'keuanganuser'])->name('keuangan'); 
 
 
-
-
+    Route::get('/keuangan-user', [AnggotaController::class, 'keuanganuser'])->name('keuangan');
 });
- 

@@ -41,64 +41,80 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-            DB::beginTransaction();
-            $data = User::updateOrCreate(
-                ['id' => $request->id],
-                [
-                    'role_id'           => Roles::where('name', 'user')->first()->id,
-                    'email'             => $request->email,
-                    'username'          => $request->username,
-                    'password'          => $request->password ?? Hash::make($request->password),
-                    'registered_at'     => $request->registered_at,
-                    'status'            => $request->status,
-                    'member_id'         => $request->member_id,
-                    'name'              => $request->name,
-                    'phone_number'      => $request->phone_number,
-                    'address'           => $request->address,
-                    'tmt'               => $request->tmt,
-                ]
-            );
-            if ($request->file("file")) {
-                $file_video = $request->file("file");
-                $nameVideo = time() . "_" . $file_video->getClientOriginalName();
-                $pathVideo = 'memento/' . $nameVideo;
-                $aws =  AwsClient::upload($request->file("file"), $pathVideo);
-            }
-            DB::commit();
-            $this->isSuccess = true;
-        } catch (\Exception $e) {
-            DB::rollBack();
 
-            $this->exception = App::environment('local') ? $e->getMessage() : "Terjadi kesalahan!";
+            $data['role_id']=Roles::where('name', 'user')->first()->id;
+            $data['email']=$request->email;
+            $data['username']=$request->username;
+            if($request->id)
+            {
+             if($request->password)
+             {
+
+                $data['password']= Hash::make($request->password);
+            } 
         }
+        else
+        {
+            $data['password']= Hash::make($request->password);
+        }
+        $data['registered_at']=$request->registered_at;
+        $data['status']=$request->status;
+        $data['member_id']=$request->member_id;
+        $data['name']=$request->name;
+        $data['phone_number']=$request->phone_number;
+        $data['address']=$request->address;
+        $data['tmt']=$request->tmt;
 
-        return response()->json([
-            "status"    => $this->isSuccess ?? false,
-            "code"      => $this->isSuccess ? 200 : 600,
-            "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
-            "data"      => $this->isSuccess ? $data : [],
-        ], 201);
-    }
 
-    public function destroy($id)
-    {
+
+
+
         DB::beginTransaction();
-        try {
-            $data = User::findOrFail($id);
-            $data->delete();
-
-            DB::commit();
-            $this->isSuccess = true;
-        } catch (Exception $e) {
-            DB::rollBack();
-            $this->exception = $e->getMessage();
+        $data = User::updateOrCreate(
+            ['id' => $request->id],
+            $data
+        );
+        if ($request->file("file")) {
+            $file_video = $request->file("file");
+            $nameVideo = time() . "_" . $file_video->getClientOriginalName();
+            $pathVideo = 'memento/' . $nameVideo;
+            $aws =  AwsClient::upload($request->file("file"), $pathVideo);
         }
+        DB::commit();
+        $this->isSuccess = true;
+    } catch (\Exception $e) {
+        DB::rollBack();
 
-        return response()->json([
-            "status"    => $this->isSuccess ?? false,
-            "code"      => $this->isSuccess ? 200 : 600,
-            "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
-            "data"      => $this->isSuccess ? $data : [],
-        ], 201);
+        $this->exception = App::environment('local') ? $e->getMessage() : "Terjadi kesalahan!";
     }
+
+    return response()->json([
+        "status"    => $this->isSuccess ?? false,
+        "code"      => $this->isSuccess ? 200 : 600,
+        "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
+        "data"      => $this->isSuccess ? $data : [],
+    ], 201);
+}
+
+public function destroy($id)
+{
+    DB::beginTransaction();
+    try {
+        $data = User::findOrFail($id);
+        $data->delete();
+
+        DB::commit();
+        $this->isSuccess = true;
+    } catch (Exception $e) {
+        DB::rollBack();
+        $this->exception = $e->getMessage();
+    }
+
+    return response()->json([
+        "status"    => $this->isSuccess ?? false,
+        "code"      => $this->isSuccess ? 200 : 600,
+        "message"   => $this->isSuccess ? "Success!" : ($this->exception ?? "Unknown error(?)"),
+        "data"      => $this->isSuccess ? $data : [],
+    ], 201);
+}
 }

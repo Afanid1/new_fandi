@@ -66,11 +66,16 @@ public function keuanganuser(Request $request)
 	}
 
 	 public function gettablepoin(Request $request)
+
 	{
 	 $get_member=DB::table('users')->where('id',Auth::user()->id)->first();
 
 	 $getpoin=DB::table('tb_poin_fandi')->where('id_user',@$get_member->member_id)->where('status','aktif')->orderBy('tanggal_poin','DESC')->paginate(20);
-	  print json_encode(array('getpoin' => $getpoin));
+
+		$jumlah_poin         = DB::table('tb_poin_fandi')->where('id_user',@$get_member->member_id)->sum('jumlah_poin');
+		$digunakan         = DB::table('tb_poin_dipakai')->where('id_user',@$get_member->member_id)->sum('poin');
+
+		print json_encode(array('getpoin' => $getpoin,'jumlah_poin'=>$jumlah_poin,'digunakan'=>$digunakan));
 
 
 	}

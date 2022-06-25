@@ -1,6 +1,6 @@
 @extends('layout.master_user') 
-@section('title')
-    Dashboard
+@section('title') 
+Dashboard
 @endsection 
 @section('css') 
 @endsection 
@@ -43,59 +43,69 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
+
                 </div>
                 <div class="card-body">
-                <table class="table center">
-                <tr>
-                    <th>id_transaksi</th>
-                    <th>tanggal_poin</th>
-                    <th>id_user</th>
-                    <th>nominal</th>
-                    <th>jumlah_poin</th>
-                    <th>Aksi</th>
-                </tr>
-                <tbody id="listPoin">
-                </tbody>
-                </table>
+                    <table>
+                        <tr><td id="jumlahpoin"></td></tr>
+                        <tr><td id="digunakan"></td></tr>
+                        <tr><td id="sisa"></td></tr></table>                    
+                        <table class="table center">
+                            <tr>
+                                <th>id_transaksi</th>
+                                <th>tanggal_poin</th>
+                                <th>id_user</th>
+                                <th>nominal</th>
+                                <th>jumlah_poin</th> 
+                                <th>Aksi</th>
+                            </tr>
+                            <tbody id="listPoin">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-</div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
 
-<!-- /.content-wrapper -->
-@endsection
+    <!-- /.content-wrapper -->
+    @endsection
 
-@section('script')
-<script>
-    $(document).ready(function () {
-gettable();
-function gettable() {
-            fetch("{{url('user/get-table-poin')}}", {
-                method: 'GET'
-            }).then(res => res.json()).then(data => {
-                var let_='';
-                 for (let key of data.getpoin.data) {
-                    let_ += `<tr>
-                            <th>` + key.id_transaksi + `</th>
-                            <th>` + key.tanggal_poin + `</th>
-                            <th>` + key.id_user + `</th>
-                            <th>` + key.nominal + `</th>
-                            <th>` + key.jumlah_poin + `</th>
-                            <th data-id_poin="` + key.id_poin + `" 
-                            ><a class="btn btn-warning Detail">Detail</a></th>  
+    @section('script')
+    <script>
+        $(document).ready(function () {
+            gettable();
+            function gettable() {
+                fetch("{{url('user/get-table-poin')}}", {
+                    method: 'GET'
+                }).then(res => res.json()).then(data => {
+                    var let_='';
+                    for (let key of data.getpoin.data) {
+                        let_ += `<tr>
+                        <th>` + key.id_transaksi + `</th>
+                        <th>` + key.tanggal_poin + `</th>
+                        <th>` + key.id_user + `</th>
+                        <th>` + key.nominal + `</th>
+                        <th>` + key.jumlah_poin + `</th> 
+                        <th data-id_poin="` + key.id_poin + `" 
+                        ><a class="btn btn-warning Detail">Detail</a></th>  
                         </tr>`
-                }
-                $('#listPoin').html(let_);
+                    }
+                    $('#jumlahpoin').html('total poin:'+data.jumlah_poin);
+                    $('#digunakan').html('total poin yg dinakan:'+data.digunakan);
+                    $('#sisa').html('total sisa :'+parseInt(data.jumlah_poin)-parseInt(data.digunakan));
+
+
+                    $('#listPoin').html(let_);
+                });
+            }
+            $('body').delegate('.Detail','click',function(e)
+            {
+                e.preventDefault();
+                window.location.href="{{url('user/get-table-poin')}}/"+$(this).closest('th').data('id_poin');
             });
-        }
-$('body').delegate('.Detail','click',function(e)
-{
-    e.preventDefault();
-    window.location.href="{{url('user/get-table-poin')}}/"+$(this).closest('th').data('id_poin');
-});
-    })
-</script>
-@endsection
+        })
+    </script>
+    @endsection
