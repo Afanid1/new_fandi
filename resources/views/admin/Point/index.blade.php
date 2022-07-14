@@ -26,30 +26,54 @@ Manage Point
         border: 1px solid rgba(0, 0, 0, .15);
         border-radius: .25rem;
     }
+    .container.mt-50 {
+  padding-top: 50px;
+}
 </style>
 @endsection
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <div class="container">
-        <div class="card mt-3">
-            <div class="card-body">
-                <table class="table centerW">
-                    <tr>
-                        <th>id_user</th> 
-                        <th>custmer_partner_name</th> 
-                        <th>Total Poin</th>
-                        <th>Total Poin yg digunakan</th>
+    <section class="content">
+        <div class="container-fluid">
 
-                        <th>Aksi</th>
-                    </tr>
-                    <tbody id="listPoin">
-                    </tbody>
-                </table>
+            <div class="container mt-50">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3">
+                            
+                            <form id="caripoin">
+                                <div class="input-group">
+                                    <input type="text" name="cari" class="form-control" placeholder="Cari poin">
+                                    <span class="input-group-append">
+                                        <button type="submit" class="btn btn-primary btn-sm">Cari</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                            
+                        </div>
+poin kelipatan 10.000
+                        <table class="table centerW">
+                            <tr>
+                                <th>id_user</th> 
+                                <th>custmer_partner_name</th> 
+                                <th>Poin</th>
+                                <th>Id Transaksi</th> 
+                                <th>Aksi</th>
+                            </tr>
+                            <tbody id="listPoin">
+                            </tbody>
+                        </table>
+                       <div id='page'></div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 <div id="statusModal" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -59,13 +83,27 @@ Manage Point
             </div>
             <div class="modal-body text-center">
                 <div class="msg-Alert"></div>
+                <div id="totalPoinmember"></div>
                 <form id="simpaneditpoin" name="simpaneditpoin">
                     <div class="form-group">
                         <label>Gunakan Poin</label>
                         <input type="text" name="penguranganpoin" class="form-control">
                     </div>
-                    <button class="btn btn-primary btn-sm" type="sumbit">Junakan</button>
+                    <button class="btn btn-primary btn-sm" type="sumbit">Gunakan</button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="DetailModal" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title align-self-center mt-0">Detail Transaksi</h5>
+            </div>
+            <div class="modal-body" id="listdetail">
+                
             </div>
         </div>
     </div>
@@ -100,14 +138,16 @@ Manage Point
                     gettable();
                 }
                 setTimeout(function() {
-                    insertPoinrealtime();
+                  //  insertPoinrealtime();
                 }, 5500);
 
             });
         }
 
-        function gettable() {
-            fetch("{{url('point/get-table-poin')}}", {
+        function gettable() { 
+            $('#listPoin').html('<tr><td  class="text-center" colspan="5">Loading...<td></tr>');
+            var url_=window.url_==undefined?'{{url('point/get-table-poin')}}':window.url_;
+            fetch(url_, {
                 method: 'GET'
             }).then(res => res.json()).then(data => {
                 var let_ = '';
@@ -115,33 +155,137 @@ Manage Point
                     var cs=key.custmer_partner_name?key.custmer_partner_name:'-';
                     let_ += `<tr>
                     
-                    <th>` + cs + `</th>  
-                    <th>` + key.id_user + `</th> 
-                    <th>` + key.total + `</th>
-                    <th>` + key.yg_dihunakan + `</th>
+                    <td>` + cs + `</td>  
+                    <td>` + key.id_user + `</td> 
+                    <td>` + key.total + `</td>
+                    <td>` + key.id_transaksi + `</td>
 
-                    <th 
+                    <td 
                     data-id_poin="`+key.id_user+`"  data-total="`+key.total+`"
-                    ><a class="btn btn-warning Editini">gunakan poin</a></th>  
+                    >
+                    <a href="#" class="btn btn-warning Editini"  data-id_user="`+key.id_user+`" title="Gunakan poin"><i class="far fa-circle nav-icon"></i></a>
+                    <a href="#" class="btn btn-primary Detail" data-id_detail="`+key.id_poin+`" title="Detail Belanja">Detail</a>
+                    <a href="#" class="btn btn-danger HapusIni" data-id_hapus="`+key.id_poin+`" title="Detail Belanja">Hapus</a>
+                    </td>  
                     </tr>`
                 }
-                $('#listPoin').html(let_);
+                var link_page=``;
+                for(let key_link of data.db_get.links)
+                {
+                    var active_=key_link.active?'active':'';
+                    link_page+=`<li class="page-item `+active_+`"><a class="page-link" href="#" data-url="`+key_link.url+`">`+key_link.label+`</a></li>`
+                }
+                if(let_!='')
+                {
+
+                    $('#listPoin').html(let_);
+                    $('#page').html(`<nav aria-label="Page navigation example">
+                    <ul class="pagination">`+link_page+`</ul>
+                    </nav>`);
+                }
+                else
+                {
+                    $('#listPoin').html('<tr><td class="text-center" colspan="5">Data Kosong</td></tr>');
+                }
             });
         }
+        $('body').delegate('.pagination .page-link','click',function(e)
+        {
+            e.preventDefault();
+            var url_ =$(this).data('url');
+            window.url_=undefined;
+            if(url_!=null)
+            {
+                window.url_=url_;
+                gettable();
+            }
+        });
+
+
+
+        
+        $('body').delegate('.HapusIni', 'click', function(e) {
+            e.preventDefault();
+            if (!confirm('yakin untuk menghapus data ini?')) {
+                return;
+            }
+
+            fetch("{{url('point/hapus-poin-transaksi')}}?id_poin=" + $(this).data('id_hapus'), {
+                method: 'GET'
+            }).then(res => res.json()).then(data => {
+                gettable();
+
+            });
+
+        });
+
+        $('body').delegate('.Detail','click',function(e)
+        {
+            e.preventDefault();
+              window.id_detail=$(this).data('id_detail');
+              $('#DetailModal').modal('show');
+
+        });
+        $('#DetailModal').on('shown.bs.modal', function (e) 
+        {
+            e.preventDefault();
+            $('#listdetail').empty();
+             fetch("{{url('point/detail-belanja')}}?id_detail=" + window.id_detail, {
+                method: 'GET'
+            }).then(res => res.json()).then(data => {
+                var list_detail=``;
+                var list_ttl=0;
+
+                for(let k of data.dt_poin.atribut)
+                {
+                    list_detail+=`<tr>
+                    <td>`+k.nm_barang+`</td>
+                    <td>`+k.harga+`</td>
+                    <td>`+k.qty+`</td> 
+                    <td>`+k.sub_total+`</td>
+                    </tr>`;
+                    list_ttl+=k.sub_total;
+                }
+            $('#listdetail').html(`ID Transaksi:`+data.dt_poin.no_trax+`<br>Tanggal :`+data.dt_poin.tanggal_poin+`<table class="table"><tr>
+                    <td>Nama Barang</td>
+                    <td>Harga</td>
+                    <td>Qty</td> 
+                    <td>Sub Total</td>
+                    </tr>`+list_detail+`<tr><td colspan="3">Total</td><td>`+list_ttl+`</td></table>`);
+               
+
+            });
+
+
+        });
+
 
         $('body').delegate('.Editini', 'click', function(e) {
             e.preventDefault();
-            window.id_poin=$(this).closest('th').data('id_poin');
-            window.total_poin=$(this).closest('th').data('total');
-            $('input[name="penguranganpoin"]').val(window.total_poin)
-            $('.msg-Alert').html('Jumlah Poin :' +$(this).closest('th').data('total'))
+            window.total_poin=undefined;
+            window.id_user=$(this).data('id_user');
             $('#statusModal').modal('show');
 
         });
-        $('body').delegate('#simpaneditpoin', 'submit', function(e) {
+$('#statusModal').on('shown.bs.modal', function (e) 
+        {
+            e.preventDefault(); 
+                $('#totalPoinmember').empty();
+
+            fetch("{{url('point/total-poin')}}?id_user=" + window.id_user, {
+                method: 'GET'
+            }).then(res => res.json()).then(data => { 
+                window.total_poin=data.jumlah_poin;
+                $('#totalPoinmember').html('<div class="alert alert-success"><h3>Total Poin:'+ window.total_poin+'</h3></div>');
+                $('input[name="penguranganpoin"]').val(data.jumlah_dipakai);
+
+            });
+                
+        });
+        
+$('body').delegate('#simpaneditpoin', 'submit', function(e) {
             e.preventDefault();
-            var total_=parseInt(window.total_poin)-parseInt($('input[name="penguranganpoin"]').val());
-            
+            var total_=parseInt(window.total_poin)-parseInt($('input[name="penguranganpoin"]').val()); 
             if(total_<1)
             {
                 alert('poin tidak mencukupi');
@@ -150,7 +294,7 @@ Manage Point
             const simpaneditpoin = document.forms.namedItem('simpaneditpoin');
             const Form_hps_item = new FormData(simpaneditpoin);
             Form_hps_item.append('_token', '{{csrf_token()}}');
-            Form_hps_item.append('id_poin', window.id_poin);
+            Form_hps_item.append('id_user', window.id_user);
             fetch("{{url('point/edit-poin-transaksi')}}", {
                 method: 'POST',
                 body: Form_hps_item
@@ -161,20 +305,7 @@ Manage Point
             });
 
         });
-        $('body').delegate('.HapusIni', 'click', function(e) {
-            e.preventDefault();
-            if (!confirm('yakin untuk menghapus data ini?')) {
-                return;
-            }
-
-            fetch("{{url('point/hapus-poin-transaksi')}}?id_poin=" + $(this).data('id_poin'), {
-                method: 'GET'
-            }).then(res => res.json()).then(data => {
-                gettable();
-
-            });
-
-        });
+        
     });
 </script>
 @endsection

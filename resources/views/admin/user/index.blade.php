@@ -148,11 +148,11 @@ Manage User
                             <div class="form-group">
                                 <label>Name Store</label>
                                 @php 
-                                $tb_poin=DB::table('tb_poin_fandi')->select('custmer_partner_name')->groupBy('custmer_partner_name')->get();
+                                $tb_poin=DB::table('tb_poin_fandi')->select('id_user')->groupBy('id_user')->get();
                                 @endphp
                                 <select name="member_id" class="form-control">
                                     @foreach(@$tb_poin as $key)
-                                    <option value="{{@$key->custmer_partner_name}}">{{@$key->custmer_partner_name}}</option>
+                                    <option value="{{@$key->id_user}}">{{@$key->id_user}}</option>
                                     @endforeach
                                 </select>
                             </div>
