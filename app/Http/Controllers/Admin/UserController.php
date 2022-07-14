@@ -28,7 +28,7 @@ class UserController extends Controller
 
     public function datatables()
     {
-        $user = User::where('role_id', '!=', Roles::where('name', 'admin')->first()->id)->get();
+        $user = User::where('role_id', '!=', Roles::where('name', 'admin')->first()->id)->orderBy('id','DESC')->get();
         return DataTables::of($user)->make();
     }
 
@@ -47,8 +47,8 @@ class UserController extends Controller
             $data['username']=$request->username;
             if($request->id)
             {
-             if($request->password)
-             {
+               if($request->password)
+               {
 
                 $data['password']= Hash::make($request->password);
             } 

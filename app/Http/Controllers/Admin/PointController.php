@@ -36,8 +36,8 @@ class PointController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($response);
-        // echo '<pre>';
-        // print_r($data);  
+
+        // dd($data);  
         // echo '</pre>'; 
         if (count(@$data->{'data'}) != 0) {
             // echo '<pre>';
@@ -53,28 +53,30 @@ class PointController extends Controller
                 // echo '</pre>';
                     $db_get         = DB::table('tb_poin_fandi')
                     ->where('id_user', strtolower(@$key->{'created_by'}->{'USER_FULLNAME'}))
-                    ->whereDate('tanggal_poin', $created_at)
+                    //->whereDate('tanggal_poin', $created_at)
                     ->where('status', 'aktif')
                     ->get();
                     $nom = 0;
                     $totalpoinsebelumnya = 0;
-                    foreach ($db_get as $key2) {
-                        $nom +=    @$key2->nominal;
-                        $totalpoinsebelumnya += @$key2->jumlah_poin;
+                    foreach ($db_get as $key2) 
+                    {
+                        $nom                    +=    @$key2->nominal;
+                        $totalpoinsebelumnya    += @$key2->jumlah_poin;
                     }
 
-                    if ($nominal_awal > $nominal_min) {
+                    if ($nominal_awal > $nominal_min) 
+                    {
                         $ttl_           = (floor(($nom + $nominal_awal) / $nominal_min)) - $totalpoinsebelumnya;
                         $db_get         = DB::table('tb_poin_fandi')->where('id_transaksi', @$key->{'TRANSACTION_ID'})->first();
                         if (!$db_get) {
                             DB::table('tb_poin_fandi')->insert(
                                 [
-                                    'jumlah_poin'   => abs($ttl_),
-                                    'id_transaksi'  => @$key->{'TRANSACTION_ID'},
-                                    'tanggal_poin'  => @$created_at,
-                                    'id_user'       => strtolower(trim(@$key->{'customer_detail'}->{'CUSTOMER_PARTNER_NAME'})),
-                                    'nominal'       => @$key->{'TRANSACTION_TOTAL'},
-                                    'status'        => 'aktif',
+                                    'jumlah_poin'           => abs($ttl_),
+                                    'id_transaksi'          => @$key->{'TRANSACTION_ID'},
+                                    'tanggal_poin'          => @$created_at,
+                                    'id_user'               => strtolower(trim(@$key->{'customer_detail'}->{'CUSTOMER_PARTNER_NAME'})),
+                                    'nominal'               => @$key->{'TRANSACTION_TOTAL'},
+                                    'status'                => 'aktif',
                                     'custmer_partner_name'=>@$key->{'created_by'}->{'USER_FULLNAME'}
                                 ]
                             );
@@ -82,10 +84,10 @@ class PointController extends Controller
                             $io = 0;
                             foreach (@$key->{'detail'} as $key_1) {
                                 $detao_belanja[$io] = array(
-                                    'qty' => @$key_1->{'DETAIL_TRANSACTION_QTY_PRODUCT'},
-                                    'harga' => @$key_1->{'DETAIL_TRANSACTION_PRICE_PRODUCT'},
-                                    'sub_total' => @$key_1->{'PRICE_AFTER_DISCOUNT'},
-                                    'nm_barang' => @$key_1->{'product'}->{'PRODUCT_NAME'}
+                                    'qty'           => @$key_1->{'DETAIL_TRANSACTION_QTY_PRODUCT'},
+                                    'harga'         => @$key_1->{'DETAIL_TRANSACTION_PRICE_PRODUCT'},
+                                    'sub_total'     => @$key_1->{'PRICE_AFTER_DISCOUNT'},
+                                    'nm_barang'     => @$key_1->{'product'}->{'PRODUCT_NAME'}
                                 );
                                 $io++;
                             }
@@ -132,17 +134,17 @@ class PointController extends Controller
 
   public function editpointransaksi(Request $request)
   {
-   $cek=DB::table('tb_poin_dipakai')->where('id_user', $request->input('id_poin'))->first();
-   if($cek)
-   {
-       DB::table('tb_poin_dipakai')->where('id_user', $request->input('id_poin'))->increment('poin',$request->input('penguranganpoin'));
-   }
-   else
-   {
-    DB::table('tb_poin_dipakai')->insert(['poin'=>$request->input('penguranganpoin'),'id_user'=>$request->input('id_poin')]);
-}
+     $cek=DB::table('tb_poin_dipakai')->where('id_user', $request->input('id_poin'))->first();
+     if($cek)
+     {
+         DB::table('tb_poin_dipakai')->where('id_user', $request->input('id_poin'))->increment('poin',$request->input('penguranganpoin'));
+     }
+     else
+     {
+        DB::table('tb_poin_dipakai')->insert(['poin'=>$request->input('penguranganpoin'),'id_user'=>$request->input('id_poin')]);
+    }
 
-print json_encode(array('error' => false));
+    print json_encode(array('error' => false));
 }
 public function hapuspointransaksi(Request $request)
 {

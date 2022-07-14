@@ -147,7 +147,14 @@ Manage User
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Name Store</label>
-                                <input type="text" name="member_id" class="form-control form-control-border" id="member_id" placeholder="">
+                                @php 
+                                $tb_poin=DB::table('tb_poin_fandi')->select('custmer_partner_name')->groupBy('custmer_partner_name')->get();
+                                @endphp
+                                <select name="member_id" class="form-control">
+                                    @foreach(@$tb_poin as $key)
+                                    <option value="{{@$key->custmer_partner_name}}">{{@$key->custmer_partner_name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label>Nama <span class="text-danger">*</span> </label>
@@ -314,7 +321,8 @@ Manage User
                     $("#user-form #registered_at").val(data.user.registered_at);
                     $('#user-form input:radio[name=status]').filter(+data.user.status == 1 ? '[value=1]' : '[value=0]').attr('checked', true);
 
-                    $("#user-form #member_id").val(data.user.member_id);
+                    //$("#user-form #member_id").val(data.user.member_id);
+                    $('select[name="member_id"]').find('option[value="'+data.user.member_id+'"]').attr('selected','selected');
                     $("#user-form #name").val(data.user.name);
                     $("#user-form #phone_number").val(data.user.phone_number);
                     $("#user-form #address").val(data.user.address);

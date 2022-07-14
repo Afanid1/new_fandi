@@ -33,18 +33,22 @@ Manage Point
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <div class="container">
-        <table class="table centerW">
-            <tr>
-                <th>id_user</th> 
-                <th>custmer_partner_name</th> 
-                <th>Total Poin</th>
-                <th>Total Poin yg digunakan</th>
+        <div class="card mt-3">
+            <div class="card-body">
+                <table class="table centerW">
+                    <tr>
+                        <th>id_user</th> 
+                        <th>custmer_partner_name</th> 
+                        <th>Total Poin</th>
+                        <th>Total Poin yg digunakan</th>
 
-                <th>Aksi</th>
-            </tr>
-            <tbody id="listPoin">
-            </tbody>
-        </table>
+                        <th>Aksi</th>
+                    </tr>
+                    <tbody id="listPoin">
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 <div id="statusModal" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
