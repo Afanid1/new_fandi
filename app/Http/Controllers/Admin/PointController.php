@@ -166,6 +166,8 @@ public function gettotalpoin(Request $request)
 {
     $jumlah_poin         = DB::table('tb_poin_fandi') 
         ->where('id_user','like', $request->input('id_user'))  
+        ->where('status','=','aktif')  
+
         ->sum('jumlah_poin');
         $jumlah_dipakai  = DB::table('tb_poin_dipakai') 
         ->where('id_user','like', $request->input('id_user'))  
