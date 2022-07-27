@@ -30,31 +30,30 @@ class OtherPaymentController extends Controller
 
     public function datatables()
     {
-        $user = User::with(['otherPayment' => function($q){
-                    $q->where('payment_year', date('Y'));
-                }])
-                ->where('role_id', '!=', Roles::where('name', 'admin')->first()->id)
-                ->get();
+        $user = User::with(['otherPayment' => function ($q) {
+            $q->where('payment_year', date('Y'));
+        }])
+            ->where('role_id', '!=', Roles::where('name', 'admin')->first()->id)
+            ->get();
 
         return DataTables::of($user)
-            ->addColumn('other_total', function($user) {
+            ->addColumn('other_total', function ($user) {
                 return YearlyLog::where('year', date('Y'))->where('user_id', $user->id)->first()->total_other ?? 0;
             })
-            ->addColumn('last_year_1', function($user) {
-                return YearlyLog::where('year', '<=', (date('Y')-1))->where('user_id', $user->id)->sum('total_other') ?? 0;
+            ->addColumn('last_year_1', function ($user) {
+                return YearlyLog::where('year', '<=', (date('Y') - 1))->where('user_id', $user->id)->sum('total_other') ?? 0;
             })
-            ->addColumn('total_all', function($user) {
+            ->addColumn('total_all', function ($user) {
                 return YearlyLog::where('user_id', $user->id)->sum('total_other') ?? 0;
             })
             ->make();
-
     }
 
     public function store(Request $request)
     {
         try {
             DB::beginTransaction();
-            $request->amount = preg_replace( '/[^0-9]/', '', $request->amount );
+            $request->amount = preg_replace('/[^0-9]/', '', $request->amount);
 
             $isCreated = OtherPayment::where([
                 'user_id' => $request->user_id,
@@ -73,12 +72,12 @@ class OtherPaymentController extends Controller
                 'payment_month' => 12,
             ])->count();
 
-            if ($isCreated == 0){
-                for ($i = 0; $i < 12; $i++){
+            if ($isCreated == 0) {
+                for ($i = 0; $i < 12; $i++) {
                     OtherPayment::updateOrCreate(
                         [
                             'user_id'           => $request->user_id,
-                            'payment_month'     => ($i+1),
+                            'payment_month'     => ($i + 1),
                             'payment_year' => $request->payment_year,
                         ],
                         [

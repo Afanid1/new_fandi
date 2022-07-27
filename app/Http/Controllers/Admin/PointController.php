@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OtherPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -37,9 +38,8 @@ class PointController extends Controller
         curl_close($curl);
         $data = json_decode($response);
 
-        // dd($data);  
         // echo '</pre>'; 
-        if (count(@$data->{'data'}) != 0) {
+        if (@$data) {
             // echo '<pre>';
             $data_trx = @$data->{'data'};
             $nominal_min = 10000;

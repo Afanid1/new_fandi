@@ -36,44 +36,70 @@ Manage Point
 @section('content')
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <section class="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
         <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Manage Poin</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Manage Poin</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.content -->
+    </div><!-- /.content -->
 
-            <div class="container mt-50">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-md-9"></div>
-                            <div class="col-md-3">
-
-                                <form id="caripoin">
-                                    <div class="input-group">
-                                        <input type="text" name="cari" class="form-control" placeholder="Cari poin">
-                                        <span class="input-group-append">
-                                            <button type="submit" class="btn btn-primary btn-sm">Cari</button>
-                                        </span>
-                                    </div>
-                                </form>
-                            </div>
-
-                        </div>
-                        poin kelipatan 10.000
-                        <table class="table centerW">
-                            <tr>
-                                <th>id_user</th>
-                                <th>custmer_partner_name</th>
-                                <th>Poin</th>
-                                <th>Id Transaksi</th>
-                                <th>Aksi</th>
-                            </tr>
-                            <tbody id="listPoin">
-                            </tbody>
-                        </table>
-                        <div id='page'></div>
+    <!-- /.content-header -->
+    <div class="container-fluid">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Poin</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3">
+
+                            <form id="caripoin">
+                                <div class="input-group">
+                                    <input type="text" name="cari" class="form-control" placeholder="Cari poin">
+                                    <span class="input-group-append">
+                                        <button type="submit" class="btn btn-primary btn-sm">Cari</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <table class="table centerW">
+                        <tr>
+                            <th>id_user</th>
+                            <th>custmer_partner_name</th>
+                            <th>Poin</th>
+                            <th>Id Transaksi</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <tbody id="listPoin">
+                        </tbody>
+                    </table>
+                    <div id='page'></div>
                 </div>
             </div>
         </div>
+    </div>
     </section>
 </div>
 <div id="statusModal" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -180,8 +206,8 @@ Manage Point
 
                     $('#listPoin').html(let_);
                     $('#page').html(`<nav aria-label="Page navigation example">
-                    <ul class="pagination">` + link_page + `</ul>
-                    </nav>`);
+                        <ul class="pagination">` + link_page + `</ul>
+                        </nav>`);
                 } else {
                     $('#listPoin').html('<tr><td class="text-center" colspan="5">Data Kosong</td></tr>');
                 }
@@ -196,9 +222,6 @@ Manage Point
                 gettable();
             }
         });
-
-
-
 
         $('body').delegate('.HapusIni', 'click', function(e) {
             e.preventDefault();
@@ -245,14 +268,8 @@ Manage Point
                     <td>Qty</td> 
                     <td>Sub Total</td>
                     </tr>` + list_detail + `<tr><td colspan="3">Total</td><td>` + list_ttl + `</td></table>`);
-
-
             });
-
-
         });
-
-
         $('body').delegate('.Editini', 'click', function(e) {
             e.preventDefault();
             window.total_poin = undefined;
@@ -279,7 +296,7 @@ Manage Point
             e.preventDefault();
             var total_ = parseInt(window.total_poin) - parseInt($('input[name="penguranganpoin"]').val());
             if (total_ < 1) {
-                alert('poin tidak mencukupi');
+                alert('Poin tidak mencukupi');
                 return;
             }
             const simpaneditpoin = document.forms.namedItem('simpaneditpoin');

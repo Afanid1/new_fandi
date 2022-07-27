@@ -2,8 +2,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
-        <img src="{{asset('dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Kopkar</span>
+        <img src="{{asset('dist/img/logopolindra.png')}}" alt="Polindra Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">KopkarPolindra</span>
     </a>
 
     <!-- Sidebar -->
@@ -11,10 +11,11 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{asset('dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+                <img src="{{asset('dist/img/admin.gif')}}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Alexander Pierce</a>
+                <a href="#" class="d-block">{{Auth::user()->name}}</a>
+                <!-- <a href="#" class="d-block">Alexander Pierce</a> -->
             </div>
         </div>
 
@@ -45,7 +46,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.point.index') }}" class="nav-link {{Route::currentRouteName() == 'admin.point.index' ? 'active' : ''}}">
-                        <i class="fa fa-user nav-icon"></i>
+                        <i class="fa fa-gift nav-icon"></i>
                         <p>Manage Poin</p>
                     </a>
                 </li>
@@ -57,7 +58,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.meta.index') }}" class="nav-link {{Route::currentRouteName() == 'admin.meta.index' ? 'active' : ''}}">
-                        <i class="fa fa-user nav-icon"></i>
+                        <i class="fa fa-dollar-sign nav-icon"></i>
                         <p>Manage Meta Data</p>
                     </a>
                 </li>
@@ -70,22 +71,22 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <ul class="nav nav-treeview ">
                         <li class="nav-item">
                             <a href="{{route('admin.payment.main.index')}}" class="nav-link {{Route::currentRouteName() == 'admin.payment.main.index' ? 'active' : ''}}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa-circle nav-icon ml-4"></i>
                                 <p>Simpanan Pokok</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{route('admin.payment.monthly.index')}}" class="nav-link {{Route::currentRouteName() == 'admin.payment.monthly.index' ? 'active' : ''}}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa-circle nav-icon ml-4"></i>
                                 <p>Simpanan Wajib</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{route('admin.payment.other.index')}}" class="nav-link {{Route::currentRouteName() == 'admin.payment.other.index' ? 'active' : ''}}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa-circle nav-icon ml-4"></i>
                                 <p>Simpanan Sukarela</p>
                             </a>
                         </li>

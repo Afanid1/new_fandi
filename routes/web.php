@@ -78,9 +78,7 @@ Route::group(['as' => 'admin.', 'middleware' => 'role:admin'], function () {
         Route::post('edit-poin-transaksi', [PointController::class, 'editpointransaksi']);
         Route::get('hapus-poin-transaksi', [PointController::class, 'hapuspointransaksi']);
         Route::get('detail-belanja', [PointController::class, 'pointdetailbelanja']);
-        Route::get('total-poin', [PointController::class, 'gettotalpoin']); 
-
-
+        Route::get('total-poin', [PointController::class, 'gettotalpoin']);
 
         Route::group(['prefix' => 'wallet', 'as' => 'wallet.'], function () {
             Route::get('/', [WalletController::class, 'index'])->name('index');

@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('title')
-Dashboard
+Simpanan Pokok
 @endsection
 
 @section('css')
