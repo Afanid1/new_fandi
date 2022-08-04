@@ -66,9 +66,11 @@ Dashboard
                                 <span class="info-box-icon btn-light elevation-1"><i class="fa fa-dollar-sign"></i></span>
                                 <div class="info-box-content">
                                     <h5 class="info-box-text">Poin Anda</h5>
-                                    <h3 class="info-box-number ml-2s">
-                                        {{ $jumlah_poin }}
-                                    </h3>
+              
+                <h3 class="info-box-number ml-2s">
+                                    {{$jumlah_poin}}
+                                    </h3> 
+             
                                 </div>
                             </div>
                         </div>
