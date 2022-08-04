@@ -67,7 +67,7 @@ Dashboard
                                 <div class="info-box-content">
                                     <h5 class="info-box-text">Poin Anda</h5>
                                     <h3 class="info-box-number ml-2s">
-                                        {{ $tb_poin_fandi }}
+                                        {{ $jumlah_poin }}
                                     </h3>
                                 </div>
                             </div>
