@@ -49,63 +49,68 @@ Dashboard
                     <table>
                         <tr><td id="jumlahpoin"></td></tr>
                         <tr><td id="digunakan"></td></tr>
-                        <tr><td id="sisa"></td></tr></table>                    
-                        <table class="table center">
-                            <tr>
-                                <th>id_transaksi</th>
-                                <th>tanggal_poin</th>
-                                <th>id_user</th>
-                                <th>nominal</th>
-                                <th>jumlah_poin</th> 
-                                <th>Aksi</th>
-                            </tr>
+                        <tr><td id="sisa"></td></tr>
+                    </table>                    
+                    <div class="card-header">
+                        <table class="table table-striped center">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Kode Transaksi</th>
+                                    <th>Nama Member</th>
+                                    <th>Tanggal</th>
+                                    <th>Nominal</th>
+                                    <th>Jml Poin</th> 
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
                             <tbody id="listPoin">
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
-    </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
 
-    <!-- /.content-wrapper -->
-    @endsection
+<!-- /.content-wrapper -->
+@endsection
 
-    @section('script')
-    <script>
-        $(document).ready(function () {
-            gettable();
-            function gettable() {
-                fetch("{{url('user/get-table-poin')}}", {
-                    method: 'GET'
-                }).then(res => res.json()).then(data => {
-                    var let_='';
-                    for (let key of data.getpoin.data) {
-                        let_ += `<tr>
-                        <th>` + key.id_transaksi + `</th>
-                        <th>` + key.tanggal_poin + `</th>
-                        <th>` + key.id_user + `</th>
-                        <th>` + key.nominal + `</th>
-                        <th>` + key.jumlah_poin + `</th> 
-                        <th data-id_poin="` + key.id_poin + `" 
-                        ><a class="btn btn-warning Detail">Detail</a></th>  
-                        </tr>`
-                    }
-                    $('#jumlahpoin').html('total poin:'+data.jumlah_poin);
-                    $('#digunakan').html('total poin yg dinakan:'+data.digunakan);
-                    $('#sisa').html('total sisa :'+parseInt(data.jumlah_poin)-parseInt(data.digunakan));
+@section('script')
+<script>
+    $(document).ready(function () {
+        gettable();
+        function gettable() {
+            fetch("{{url('user/get-table-poin')}}", {
+                method: 'GET'
+            }).then(res => res.json()).then(data => {
+                var let_='';
+                for (let key of data.getpoin.data) {
+                    let_ += `<tr class="text-center">
+                    <td>` + key.id_transaksi + `</td>
+                    <td>` + key.id_user + `</td>
+                    <td>` + key.tanggal_poin + `</td>
+                    <td>` + key.nominal + `</td>
+                    <td>` + key.jumlah_poin + `</td> 
+                    <td data-id_poin="` + key.id_poin + `" 
+                    ><d class="btn btn-warning Detail">Detail</a></td>  
+                    </tr>`
+                }
+                $('#jumlahpoin').html('Total poin: '+data.jumlah_poin);
+                $('#digunakan').html('Total poin digunakan: '+data.digunakan);
+                $('#sisa').html('total sisa :'+parseInt(data.jumlah_poin)-parseInt(data.digunakan));
 
 
-                    $('#listPoin').html(let_);
-                });
-            }
-            $('body').delegate('.Detail','click',function(e)
-            {
-                e.preventDefault();
-                window.location.href="{{url('user/get-table-poin')}}/"+$(this).closest('th').data('id_poin');
+                $('#listPoin').html(let_);
             });
-        })
-    </script>
-    @endsection
+        }
+        $('body').delegate('.Detail','click',function(e)
+        {
+            e.preventDefault();
+            window.location.href="{{url('user/get-table-poin')}}/"+$(this).closest('td').data('id_poin');
+        });
+    })
+</script>
+@endsection

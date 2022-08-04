@@ -13,7 +13,14 @@ class AnggotaController extends Controller
     //
     public function dashboard()
 	{
-		 return view('user.dashboard');
+		 
+		$tb_poin_fandi = DB::table('tb_poin_fandi')->where('id_user', @$get_member->member_id)->sum('jumlah_poin');
+		$other_payments = DB::table('other_payments')->where('user_id', Auth::user()->id)->sum('amount');
+		$main_payments = DB::table('main_payments')->where('user_id', Auth::user()->id)->sum('amount');
+		$monthly_payments = DB::table('monthly_payments')->where('user_id', Auth::user()->id)->sum('amount');
+		$wallets = DB::table('wallets')->where('user_id', Auth::user()->id)->sum('total');
+
+		return view('user.dashboard', compact('tb_poin_fandi', 'other_payments', 'main_payments', 'monthly_payments', 'wallets'));
 	}
 	public function poinuser(Request $request)
 	{

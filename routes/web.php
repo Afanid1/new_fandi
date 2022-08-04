@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\MonthlyPaymentController;
 use App\Http\Controllers\Admin\OtherPaymentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PointController;
+use App\Http\Controllers\Admin\PointRewardController;
 use App\Http\Controllers\Admin\WalletController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -66,12 +67,6 @@ Route::group(['as' => 'admin.', 'middleware' => 'role:admin'], function () {
     });
     Route::group(['prefix' => 'point', 'as' => 'point.'], function () {
         Route::get('/manage-user', [PointController::class, 'index'])->name('index');
-        // Route::get('/datatables', [PointController::class, 'datatables'])->name('ajax');
-        // Route::get('/show/{id?}', [PointController::class, 'show'])->name('show');
-        // Route::post('/store', [PointController::class, 'store'])->name('store');
-        // Route::post('/destroy/{id?}', [PointController::class, 'destroy'])->name('destroy');
-        // Route::post('/simpan-poin', [PointController::class, 'simpanpoin']);
-        // Route::post('/list-poin', [PointController::class, 'listpoin']);
         Route::get('get-poin-transaksi', [PointController::class, 'getpointransaksi']);
         Route::get('datapoin', [PointController::class, 'datapoin']);
         Route::get('get-table-poin', [PointController::class, 'gettablepoin']);
@@ -88,7 +83,22 @@ Route::group(['as' => 'admin.', 'middleware' => 'role:admin'], function () {
             Route::get('/show/{id?}', [WalletController::class, 'show'])->name('show');
         });
     });
+    Route::group(['prefix' => 'reward', 'as' => 'reward.'], function () {
+        Route::get('/manage-poin', [PointRewardController::class, 'index'])->name('index');
+        Route::get('get-poin-transaksi', [PointRewardController::class, 'getpointransaksi']);
+        Route::get('datapoin', [PointRewardController::class, 'datapoin']);
+        Route::get('get-table-point', [PointRewardController::class, 'gettablepoint']);
+        Route::post('edit-poin-transaksi', [PointRewardController::class, 'editpointransaksi']);
+        Route::get('hapus-poin-transaksi', [PointRewardController::class, 'hapuspointransaksi']);
+        Route::get('detail-belanja', [PointRewardController::class, 'pointdetailbelanja']);
+        Route::get('total-poin', [PointRewardController::class, 'gettotalpoin']);
 
+        Route::group(['prefix' => 'wallet', 'as' => 'wallet.'], function () {
+            Route::get('/', [WalletController::class, 'index'])->name('index');
+            Route::get('/datatables', [WalletController::class, 'datatables'])->name('ajax');
+            Route::get('/show/{id?}', [WalletController::class, 'show'])->name('show');
+        });
+    });
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
         Route::group(['prefix' => 'main', 'as' => 'main.'], function () {
             Route::get('/', [MainPaymentController::class, 'index'])->name('index');

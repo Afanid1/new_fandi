@@ -49,12 +49,13 @@ class PointController extends Controller
 
                 if(@$key->{'customer_detail'}->{'CUSTOMER_PARTNER_NAME'})
                 {
-
+                    //Carbon::parse untuk merubah format tgl
                     $created_at     = Carbon::parse($key->{'created_at'})->format('Y-m-d');
-               // echo '<pre>';
-                   $nominal_awal   = @$key->{'TRANSACTION_TOTAL'};
-                // echo '</pre>';
+
+                    $nominal_awal   = @$key->{'TRANSACTION_TOTAL'};
+
                     $db_get         = DB::table('tb_poin_fandi')
+                    //strtolower untuk merubah string menjadi huruf kecil. 
                     ->where('id_user', strtolower(@$key->{'created_by'}->{'USER_FULLNAME'}))
                     ->whereDate('tanggal_poin', $created_at)
                     ->where('status', 'aktif')
@@ -70,40 +71,40 @@ class PointController extends Controller
                     $ttl_           = (floor(($nom + $nominal_awal) / $nominal_min)) - $totalpoinsebelumnya;
                     $ttl_           =$ttl_>0?$ttl_:0;
                     $db_get         = DB::table('tb_poin_fandi')->where('id_transaksi', @$key->{'TRANSACTION_ID'})->first(); 
-                        if (!$db_get) 
-                        {
-                            DB::table('tb_poin_fandi')->insert(
-                                [
-                                    'jumlah_poin'           => $ttl_,
-                                    'id_transaksi'          => @$key->{'TRANSACTION_ID'},
-                                    'tanggal_poin'          => @$created_at,
-                                    'id_user'               => strtolower(trim(@$key->{'customer_detail'}->{'CUSTOMER_PARTNER_NAME'})),
-                                    'nominal'               => @$key->{'TRANSACTION_TOTAL'},
-                                    'status'                => 'aktif',
-                                    'custmer_partner_name'=>@$key->{'created_by'}->{'USER_FULLNAME'}
-                                ]
+                    if (!$db_get) 
+                    {
+                        DB::table('tb_poin_fandi')->insert(
+                            [
+                                'jumlah_poin'           => $ttl_,
+                                'id_transaksi'          => @$key->{'TRANSACTION_ID'},
+                                'tanggal_poin'          => @$created_at,
+                                'id_user'               => strtolower(trim(@$key->{'customer_detail'}->{'CUSTOMER_PARTNER_NAME'})),
+                                'nominal'               => @$key->{'TRANSACTION_TOTAL'},
+                                'status'                => 'aktif',
+                                'custmer_partner_name'=>@$key->{'created_by'}->{'USER_FULLNAME'}
+                            ]
+                        );
+                        $detao_belanja = array();
+                        $io = 0;
+                        foreach (@$key->{'detail'} as $key_1) {
+                            $detao_belanja[$io] = array(
+                                'qty'           => @$key_1->{'DETAIL_TRANSACTION_QTY_PRODUCT'},
+                                'harga'         => @$key_1->{'DETAIL_TRANSACTION_PRICE_PRODUCT'},
+                                'sub_total'     => @$key_1->{'PRICE_AFTER_DISCOUNT'},
+                                'nm_barang'     => @$key_1->{'product'}->{'PRODUCT_NAME'}
                             );
-                            $detao_belanja = array();
-                            $io = 0;
-                            foreach (@$key->{'detail'} as $key_1) {
-                                $detao_belanja[$io] = array(
-                                    'qty'           => @$key_1->{'DETAIL_TRANSACTION_QTY_PRODUCT'},
-                                    'harga'         => @$key_1->{'DETAIL_TRANSACTION_PRICE_PRODUCT'},
-                                    'sub_total'     => @$key_1->{'PRICE_AFTER_DISCOUNT'},
-                                    'nm_barang'     => @$key_1->{'product'}->{'PRODUCT_NAME'}
-                                );
-                                $io++;
-                            }
-                            $daftarbelanja = serialize($detao_belanja);
-                            DB::table('tb_belanja')->insert(
-                                [
-                                    'no_trax'  => @$key->{'TRANSACTION_ID'},
-                                    'atribut'  => $daftarbelanja
-                                ]
-                            );
-                   
-                            $error = false;
-                        } 
+                            $io++;
+                        }
+                        $daftarbelanja = serialize($detao_belanja);
+                        DB::table('tb_belanja')->insert(
+                            [
+                                'no_trax'  => @$key->{'TRANSACTION_ID'},
+                                'atribut'  => $daftarbelanja
+                            ]
+                        );
+
+                        $error = false;
+                    } 
                 }
                 
             }
@@ -114,13 +115,13 @@ class PointController extends Controller
     public function gettablepoin(Request $request)
     {
         $db_get         = DB::table('tb_poin_fandi') 
-         ->select('tb_poin_fandi.*', 'tb_poin_fandi.jumlah_poin as total')  
+        ->select('tb_poin_fandi.*', 'tb_poin_fandi.jumlah_poin as total')  
         ->where('tb_poin_fandi.status','aktif')
         ->paginate(20);
         $i=0;
         foreach ($db_get as $key) 
         {
-          
+
 
           $i++;
           
@@ -149,7 +150,7 @@ public function hapuspointransaksi(Request $request)
     ->where('id_poin', $request->input('id_poin'))
     ->update(['status'  => 'hapus']);
     print json_encode(array('error' => false));
- 
+
 }
 public function pointdetailbelanja(Request $request)
 {
@@ -165,14 +166,14 @@ public function pointdetailbelanja(Request $request)
 public function gettotalpoin(Request $request)
 {
     $jumlah_poin         = DB::table('tb_poin_fandi') 
-        ->where('id_user','like', $request->input('id_user'))  
-        ->where('status','=','aktif')  
+    ->where('id_user','like', $request->input('id_user'))  
+    ->where('status','=','aktif')  
 
-        ->sum('jumlah_poin');
-        $jumlah_dipakai  = DB::table('tb_poin_dipakai') 
-        ->where('id_user','like', $request->input('id_user'))  
-        ->first();
-        $dipakai=@$jumlah_dipakai->poin?$jumlah_dipakai->poin:0;
+    ->sum('jumlah_poin');
+    $jumlah_dipakai  = DB::table('tb_poin_dipakai') 
+    ->where('id_user','like', $request->input('id_user'))  
+    ->first();
+    $dipakai=@$jumlah_dipakai->poin?$jumlah_dipakai->poin:0;
 
 
     print json_encode(array('jumlah_poin' =>$jumlah_poin-$dipakai,'jumlah_dipakai'=>$dipakai));

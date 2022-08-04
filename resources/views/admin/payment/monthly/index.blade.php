@@ -40,7 +40,7 @@ Simpanan Wajib
                     <h3 class="card-title">Data Simpanan Wajib</h3>
 
                     <div class="card-tools">
-                        <button type="button" class="btn btn-primary btn-add-manual"><i class="fas fa-plus"></i> Tambah Simpanan</button>
+                        <!-- <button type="button" class="btn btn-primary btn-add-manual"><i class="fas fa-plus"></i> Tambah Simpanan</button> -->
 
                         {{-- <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">--}}
                         {{-- <i class="fas fa-minus"></i>--}}

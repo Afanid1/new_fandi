@@ -87,7 +87,7 @@ Manage Point
                             <tr>
                                 <th>id_user</th>
                                 <th>custmer_partner_name</th>
-                                <th>Poin</th>
+                                <th>Poin Total</th>
                                 <th>Id Transaksi</th>
                                 <th>Aksi</th>
                             </tr>
@@ -100,7 +100,7 @@ Manage Point
             </div>
         </div>
     </div>
-</section>
+    </section>
 </div>
 <div id="statusModal" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -134,6 +134,7 @@ Manage Point
         </div>
     </div>
 </div>
+<!-- /.content-wrapper -->
 <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
@@ -163,21 +164,21 @@ Manage Point
                     gettable();
                 }
                 setTimeout(function() {
-                  //  insertPoinrealtime();
+                    //  insertPoinrealtime();
                 }, 5500);
 
             });
         }
 
-        function gettable() { 
+        function gettable() {
             $('#listPoin').html('<tr><td  class="text-center" colspan="5">Loading...<td></tr>');
-            var url_=window.url_==undefined?'{{url('point/get-table-poin')}}':window.url_;
+            var url_ = window.url_ == undefined ? '{{url('point/get-table-poin')}}': window.url_;
             fetch(url_, {
                 method: 'GET'
             }).then(res => res.json()).then(data => {
                 var let_ = '';
                 for (let key of data.db_get.data) {
-                    var cs=key.custmer_partner_name?key.custmer_partner_name:'-';
+                    var cs = key.custmer_partner_name ? key.custmer_partner_name : '-';
                     let_ += `<tr>
                     
                     <td>` + cs + `</td>  
@@ -186,151 +187,139 @@ Manage Point
                     <td>` + key.id_transaksi + `</td>
 
                     <td 
-                    data-id_poin="`+key.id_user+`"  data-total="`+key.total+`"
-                    >
-                    <a href="#" class="btn btn-warning Editini"  data-id_user="`+key.id_user+`" title="Gunakan poin"><i class="far fa-circle nav-icon"></i></a>
-                    <a href="#" class="btn btn-primary Detail" data-id_detail="`+key.id_poin+`" title="Detail Belanja">Detail</a>
-                    <a href="#" class="btn btn-danger HapusIni" data-id_hapus="`+key.id_poin+`" title="Detail Belanja">Hapus</a>
-                    </td>  
-                    </tr>`
-                }
-                var link_page=``;
-                for(let key_link of data.db_get.links)
-                {
-                    var active_=key_link.active?'active':'';
-                    link_page+=`<li class="page-item `+active_+`"><a class="page-link" href="#" data-url="`+key_link.url+`">`+key_link.label+`</a></li>`
-                }
-                if(let_!='')
-                {
+                    data-id_poin="` + key.id_user + `"  data-total="` + key.total + `">
+                    <a href="#" class="btn btn-warning Editini"  data-id_user="` + key.id_user + `" title="Gunakan poin"><i class="far fa-circle nav-icon"></i></a>
+                        <a href="#" class="btn btn-primary Detail" data-id_detail="` + key.id_poin + `" title="Detail Belanja">Detail</a>
+                        <a href="#" class="btn btn-danger HapusIni" data-id_hapus="` + key.id_poin + `" title="Detail Belanja">Hapus</a>
+                        </td>  
+                        </tr>`
+                    }
+                    var link_page = ``;
+                    for (let key_link of data.db_get.links) {
+                        var active_ = key_link.active ? 'active' : '';
+                        link_page += `<li class="page-item ` + active_ + `"><a class="page-link" href="#" data-url="` + key_link.url + `">` + key_link.label + `</a></li>`
+                    }
+                    if (let_ != '') {
 
-                    $('#listPoin').html(let_);
-                    $('#page').html(`<nav aria-label="Page navigation example">
-                    <ul class="pagination">`+link_page+`</ul>
-                    </nav>`);
-                }
-                else
-                {
-                    $('#listPoin').html('<tr><td class="text-center" colspan="5">Data Kosong</td></tr>');
-                }
-            });
-        }
-        $('body').delegate('.pagination .page-link','click',function(e)
-        {
-            e.preventDefault();
-            var url_ =$(this).data('url');
-            window.url_=undefined;
-            if(url_!=null)
-            {
-                window.url_=url_;
-                gettable();
+                        $('#listPoin').html(let_);
+                        $('#page').html(`<nav aria-label="Page navigation example">
+                            <ul class="pagination">` + link_page + `</ul>
+                            </nav>`);
+                    } else {
+                        $('#listPoin').html('<tr><td class="text-center" colspan="5">Data Kosong</td></tr>');
+                    }
+                });
             }
-        });
-
-
-
-        
-        $('body').delegate('.HapusIni', 'click', function(e) {
-            e.preventDefault();
-            if (!confirm('yakin untuk menghapus data ini?')) {
-                return;
-            }
-
-            fetch("{{url('point/hapus-poin-transaksi')}}?id_poin=" + $(this).data('id_hapus'), {
-                method: 'GET'
-            }).then(res => res.json()).then(data => {
-                gettable();
-
-            });
-
-        });
-
-        $('body').delegate('.Detail','click',function(e)
-        {
-            e.preventDefault();
-              window.id_detail=$(this).data('id_detail');
-              $('#DetailModal').modal('show');
-
-        });
-        $('#DetailModal').on('shown.bs.modal', function (e) 
-        {
-            e.preventDefault();
-            $('#listdetail').empty();
-             fetch("{{url('point/detail-belanja')}}?id_detail=" + window.id_detail, {
-                method: 'GET'
-            }).then(res => res.json()).then(data => {
-                var list_detail=``;
-                var list_ttl=0;
-
-                for(let k of data.dt_poin.atribut)
-                {
-                    list_detail+=`<tr>
-                    <td>`+k.nm_barang+`</td>
-                    <td>`+k.harga+`</td>
-                    <td>`+k.qty+`</td> 
-                    <td>`+k.sub_total+`</td>
-                    </tr>`;
-                    list_ttl+=k.sub_total;
+            $('body').delegate('.pagination .page-link', 'click', function(e) {
+                e.preventDefault();
+                var url_ = $(this).data('url');
+                window.url_ = undefined;
+                if (url_ != null) {
+                    window.url_ = url_;
+                    gettable();
                 }
-            $('#listdetail').html(`ID Transaksi:`+data.dt_poin.no_trax+`<br>Tanggal :`+data.dt_poin.tanggal_poin+`<table class="table"><tr>
-                    <td>Nama Barang</td>
-                    <td>Harga</td>
-                    <td>Qty</td> 
-                    <td>Sub Total</td>
-                    </tr>`+list_detail+`<tr><td colspan="3">Total</td><td>`+list_ttl+`</td></table>`);
-               
+            });
+
+
+
+
+            $('body').delegate('.HapusIni', 'click', function(e) {
+                e.preventDefault();
+                if (!confirm('yakin untuk menghapus data ini?')) {
+                    return;
+                }
+
+                fetch("{{url('point/hapus-poin-transaksi')}}?id_poin=" + $(this).data('id_hapus'), {
+                    method: 'GET'
+                }).then(res => res.json()).then(data => {
+                    gettable();
+
+                });
+
+            });
+
+            $('body').delegate('.Detail', 'click', function(e) {
+                e.preventDefault();
+                window.id_detail = $(this).data('id_detail');
+                $('#DetailModal').modal('show');
+
+            });
+            $('#DetailModal').on('shown.bs.modal', function(e) {
+                e.preventDefault();
+                $('#listdetail').empty();
+                fetch("{{url('point/detail-belanja')}}?id_detail=" + window.id_detail, {
+                    method: 'GET'
+                }).then(res => res.json()).then(data => {
+                    var list_detail = ``;
+                    var list_ttl = 0;
+
+                    for (let k of data.dt_poin.atribut) {
+                        list_detail += `<tr>
+                        <td>` + k.nm_barang + `</td>
+                        <td>` + k.harga + `</td>
+                        <td>` + k.qty + `</td> 
+                        <td>` + k.sub_total + `</td>
+                        </tr>`;
+                        list_ttl += k.sub_total;
+                    }
+                    $('#listdetail').html(`ID Transaksi:` + data.dt_poin.no_trax + `<br>Tanggal :` + data.dt_poin.tanggal_poin + `<table class="table"><tr>
+                        <td>Nama Barang</td>
+                        <td>Harga</td>
+                        <td>Qty</td> 
+                        <td>Sub Total</td>
+                        </tr>` + list_detail + `<tr><td colspan="3">Total</td><td>` + list_ttl + `</td></table>`);
+
+
+                });
+
 
             });
 
 
-        });
+            $('body').delegate('.Editini', 'click', function(e) {
+                e.preventDefault();
+                window.total_poin = undefined;
+                window.id_user = $(this).data('id_user');
+                $('#statusModal').modal('show');
 
-
-        $('body').delegate('.Editini', 'click', function(e) {
-            e.preventDefault();
-            window.total_poin=undefined;
-            window.id_user=$(this).data('id_user');
-            $('#statusModal').modal('show');
-
-        });
-$('#statusModal').on('shown.bs.modal', function (e) 
-        {
-            e.preventDefault(); 
+            });
+            $('#statusModal').on('shown.bs.modal', function(e) {
+                e.preventDefault();
                 $('#totalPoinmember').empty();
 
-            fetch("{{url('point/total-poin')}}?id_user=" + window.id_user, {
-                method: 'GET'
-            }).then(res => res.json()).then(data => { 
-                window.total_poin=data.jumlah_poin;
-                $('#totalPoinmember').html('<div class="alert alert-success"><h3>Total Poin:'+ window.total_poin+'</h3></div>');
-                $('input[name="penguranganpoin"]').val(data.jumlah_dipakai);
+                fetch("{{url('point/total-poin')}}?id_user=" + window.id_user, {
+                    method: 'GET'
+                }).then(res => res.json()).then(data => {
+                    window.total_poin = data.jumlah_poin;
+                    $('#totalPoinmember').html('<div class="alert alert-success"><h3>Total Poin:' + window.total_poin + '</h3></div>');
+                    $('input[name="penguranganpoin"]').val(data.jumlah_dipakai);
 
-            });
-                
-        });
-        
-$('body').delegate('#simpaneditpoin', 'submit', function(e) {
-            e.preventDefault();
-            var total_=parseInt(window.total_poin)-parseInt($('input[name="penguranganpoin"]').val()); 
-            if(total_<1)
-            {
-                alert('poin tidak mencukupi');
-                return;
-            }
-            const simpaneditpoin = document.forms.namedItem('simpaneditpoin');
-            const Form_hps_item = new FormData(simpaneditpoin);
-            Form_hps_item.append('_token', '{{csrf_token()}}');
-            Form_hps_item.append('id_user', window.id_user);
-            fetch("{{url('point/edit-poin-transaksi')}}", {
-                method: 'POST',
-                body: Form_hps_item
-            }).then(res => res.json()).then(data => {
-                gettable();
-                $('#statusModal').modal('hide');
+                });
 
             });
 
+            $('body').delegate('#simpaneditpoin', 'submit', function(e) {
+                e.preventDefault();
+                var total_ = parseInt(window.total_poin) - parseInt($('input[name="penguranganpoin"]').val());
+                if (total_ < 1) {
+                    alert('poin tidak mencukupi');
+                    return;
+                }
+                const simpaneditpoin = document.forms.namedItem('simpaneditpoin');
+                const Form_hps_item = new FormData(simpaneditpoin);
+                Form_hps_item.append('_token', '{{csrf_token()}}');
+                Form_hps_item.append('id_user', window.id_user);
+                fetch("{{url('point/edit-poin-transaksi')}}", {
+                    method: 'POST',
+                    body: Form_hps_item
+                }).then(res => res.json()).then(data => {
+                    gettable();
+                    $('#statusModal').modal('hide');
+
+                });
+
+            });
+
         });
-        
-    });
-</script>
-@endsection
+    </script>
+    @endsection

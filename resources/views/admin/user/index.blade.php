@@ -176,7 +176,7 @@ Manage User
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer ">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                 <button type="button" id="btn_form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
             </div>
@@ -264,7 +264,7 @@ Manage User
                 title: 'Aksi',
                 orderable: false,
                 createdCell: function(td, cellData, rowData, row, col) {
-                    $(td).addClass('text-center');
+                    $(td).addClass('text-center row');
                 },
                 render: function(data, type, full, meta) {
                     return '\
@@ -274,10 +274,7 @@ Manage User
                     <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-delete btn btn-sm btn-outline-danger btn-icon" title="Delete">\
                     <i class="fa fa-trash"></i>\
                     </a>\
-                    <a href="javascript:void(0);" data-id="' + full.id + '" class="btn-login btn btn-sm btn-outline-danger btn-icon" title="Delete">\
-                    login\
-                    </a>\
-                    ';
+                                       ';
                 },
             },
             ],
